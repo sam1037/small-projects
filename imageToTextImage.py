@@ -6,14 +6,15 @@ import math
 def get_images():
     if len(sys.argv) == 1:
         print("Usage: -input")
-        return
+        exit()
     files = sys.argv[1:]
     files = [f for f in files if f in os.listdir()]
+    for f in files:
+        print(f)
     return files   
 
-def convert(image):
+def convert(image, output_name):
     code = "#Wo- "
-    print(len(code))
     codePic = ""
 
     w, h = image.size
@@ -22,14 +23,23 @@ def convert(image):
 
     for i in range(h):
         for j in range(w):
-            avg = sum(image.getpixel((j,i)))
+            avg = sum(image.getpixel((j,i)))                         
             avg = int(avg/3)
             codePic += code[int( (len(code)-1) * (avg/255) )]
         codePic += "\n"
 
-    result = open("result.txt", "w")
+    output_name = output_name + ".txt"
+    result = open(output_name, "w")
     result.write(codePic)
 
 
-image = Image.open("rgb.jpg")
-convert(image)
+def main():
+    images = get_images()
+    print(images)
+    for file in images:
+        file_name, file_ext = file.split(".")
+        image = Image.open(file)
+        convert(image, file_name)
+
+main()
+
